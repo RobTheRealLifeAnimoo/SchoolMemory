@@ -11,8 +11,6 @@ public class MenuStart : MonoBehaviour
     }
     public void QuitGame() 
     {
-        Debug.Log("QUIT");
-        SceneManager.LoadScene("Quit");
-
+        Application.Quit();
     }
 }
