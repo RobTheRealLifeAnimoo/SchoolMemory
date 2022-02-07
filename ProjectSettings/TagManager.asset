@@ -5,6 +5,8 @@ TagManager:
   serializedVersion: 2
   tags:
   - QuestTracker
+  - CameraTrigger
+  - 'camera '
   layers:
   - Default
   - TransparentFX
