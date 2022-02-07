@@ -9,17 +9,21 @@ public class SecurityDeskController : MonoBehaviour
     public TMP_Text text;
     public Canvas UI;
     bool finishAvailable = false;
+    public GameObject finishPanel;
 
     void Start()
     {
         UI.gameObject.SetActive(false);
         text.gameObject.SetActive(false);
+        finishPanel.SetActive(false);
     }
 
     void Update(){
         if(Input.GetKey(KeyCode.Return) && finishAvailable == true){
+
             //SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
-            Debug.Log("Finish");
+            finishPanel.SetActive(true);
+            GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().enabled = false;
         }
     }
 

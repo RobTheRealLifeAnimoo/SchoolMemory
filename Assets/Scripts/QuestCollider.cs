@@ -11,7 +11,7 @@ public class QuestCollider : MonoBehaviour
                     q.completed = true;
                     qt.RefreshQuestTracker();
                     Debug.Log("Quest Dokončen!");
-                    Destroy(this);
+                    GameObject.Destroy(this.gameObject);
                 }
             }
         }
