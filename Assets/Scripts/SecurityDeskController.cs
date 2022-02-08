@@ -21,10 +21,17 @@ public class SecurityDeskController : MonoBehaviour
     void Update(){
         if(Input.GetKey(KeyCode.Return) && finishAvailable == true){
 
-            //SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
             finishPanel.SetActive(true);
             GameObject.FindGameObjectWithTag("Player").GetComponent<Player>().enabled = false;
+            StartCoroutine(LoadNewLevel());
         }
+    }
+
+    IEnumerator LoadNewLevel()
+    {
+        yield return new WaitForSeconds(5);
+        Cursor.lockState = CursorLockMode.None;
+        SceneManager.LoadScene(/*SceneManager.GetActiveScene().buildIndex + 1*/ 0);
     }
 
     void OnTriggerEnter(Collider other){

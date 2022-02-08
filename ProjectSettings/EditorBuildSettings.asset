@@ -9,6 +9,9 @@ EditorBuildSettings:
     path: Assets/Scenes/Trailer.unity
     guid: a5698c7300ac71d4d806ff5aff40a9e2
   - enabled: 1
+    path: Assets/Scenes/StartMenu.unity
+    guid: e74375c39f9dd444fad75490582fc767
+  - enabled: 1
     path: Assets/Scenes/Main.unity
     guid: a4a482a2243fd88459af858b906bef73
   m_configObjects: {}
