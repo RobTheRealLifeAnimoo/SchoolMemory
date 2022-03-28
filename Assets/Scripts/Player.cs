@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    public float jumpPower=3f;
+    public bool isGrounded;
+    new private Rigidbody rigidbody;
+
     Camera cam;
     CharacterController controller;
     float sensitivity = 2f;
@@ -13,7 +17,8 @@ public class Player : MonoBehaviour
     {
         Cursor.lockState = CursorLockMode.Locked;
         controller = GetComponent<CharacterController>();
-        cam = GetComponentInChildren<Camera>(); 
+        cam = GetComponentInChildren<Camera>();
+        rigidbody = GetComponent<Rigidbody>();
     }
 
     // Update is called once per frame
@@ -30,5 +35,27 @@ public class Player : MonoBehaviour
         if (currentRotation.x > 180) currentRotation.x -= 360;
         currentRotation.x = Mathf.Clamp(currentRotation.x, -70, 70);
         cam.transform.localRotation = Quaternion.Euler(currentRotation);
+        
+        if (isGrounded) 
+        {
+            if (Input.GetKeyDown(KeyCode.Space)) 
+            {
+                rigidbody.AddForce(Vector3.up * jumpPower);
+            }
+        }
+    }
+    void OnCollisionEnter(Collision other) 
+    {
+        if (other.gameObject.tag == "Ground")
+        {
+            isGrounded = true;
+        }
+    }
+    void OnCollisionExit(Collision other)
+    {
+        if (other.gameObject.tag == "Ground")
+        {
+            isGrounded = false;
+        }
     }
 }
