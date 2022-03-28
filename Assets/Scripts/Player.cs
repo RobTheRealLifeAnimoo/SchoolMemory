@@ -12,6 +12,8 @@ public class Player : MonoBehaviour
     CharacterController controller;
     float sensitivity = 2f;
     float speed = 3f;
+    float sprintSpeed=6f;
+    private float realSpeed;
     // Start is called before the first frame update
     void Start()
     {
@@ -24,18 +26,10 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Vector3 move = transform.forward * Input.GetAxis("Vertical") * speed + transform.right * Input.GetAxis("Horizontal") * speed;
-        Vector2 look = new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
+        
 
-        cam.transform.Rotate(-look.y * sensitivity, 0, 0);
-        controller.transform.Rotate(0, look.x * sensitivity, 0);
-        controller.SimpleMove(move);
-        
-        Vector3 currentRotation = cam.transform.localEulerAngles;
-        if (currentRotation.x > 180) currentRotation.x -= 360;
-        currentRotation.x = Mathf.Clamp(currentRotation.x, -70, 70);
-        cam.transform.localRotation = Quaternion.Euler(currentRotation);
-        
+        realSpeed = Input.GetKey(KeyCode.LeftShift) ? sprintSpeed : speed;
+
         if (isGrounded) 
         {
             if (Input.GetKeyDown(KeyCode.Space)) 
@@ -43,6 +37,21 @@ public class Player : MonoBehaviour
                 rigidbody.AddForce(Vector3.up * jumpPower);
             }
         }
+    }
+    void FixedUpdate() 
+    {
+        transform.Translate(realSpeed * Input.GetAxis("Horizontal") * Time.deltaTime, 0f, realSpeed * Input.GetAxis("Vertical") * Time.deltaTime);
+        //Vector3 move = transform.forward * Input.GetAxis("Vertical") * speed + transform.right * Input.GetAxis("Horizontal") * speed;
+        Vector2 look = new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
+
+        cam.transform.Rotate(-look.y * sensitivity, 0, 0);
+        controller.transform.Rotate(0, look.x * sensitivity, 0);
+        //controller.SimpleMove(move);
+
+        Vector3 currentRotation = cam.transform.localEulerAngles;
+        if (currentRotation.x > 180) currentRotation.x -= 360;
+        currentRotation.x = Mathf.Clamp(currentRotation.x, -70, 70);
+        cam.transform.localRotation = Quaternion.Euler(currentRotation);
     }
     void OnCollisionEnter(Collision other) 
     {
