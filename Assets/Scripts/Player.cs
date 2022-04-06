@@ -1,70 +1,54 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    public float jumpPower=3f;
-    public bool isGrounded;
-    new private Rigidbody rigidbody;
+    private bool isGrounded;
 
-    Camera cam;
+    public GameObject cam;
+
     CharacterController controller;
-    float sensitivity = 2f;
+
+    private Vector3 velocity;
+
+    private float gravity = -9.81f;
     float speed = 3f;
-    float sprintSpeed=6f;
-    private float realSpeed;
-    // Start is called before the first frame update
+
     void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
         controller = GetComponent<CharacterController>();
-        cam = GetComponentInChildren<Camera>();
-        rigidbody = GetComponent<Rigidbody>();
     }
 
-    // Update is called once per frame
-    void Update()
+    void Update() 
     {
-        
-
-        realSpeed = Input.GetKey(KeyCode.LeftShift) ? sprintSpeed : speed;
-
-        if (isGrounded) 
+        isGrounded = controller.isGrounded;
+        if (isGrounded && velocity.y < 0)
         {
-            if (Input.GetKeyDown(KeyCode.Space)) 
-            {
-                rigidbody.AddForce(Vector3.up * jumpPower);
-            }
+            velocity.y = 0f;
         }
-    }
-    void FixedUpdate() 
-    {
-        transform.Translate(realSpeed * Input.GetAxis("Horizontal") * Time.deltaTime, 0f, realSpeed * Input.GetAxis("Vertical") * Time.deltaTime);
-        //Vector3 move = transform.forward * Input.GetAxis("Vertical") * speed + transform.right * Input.GetAxis("Horizontal") * speed;
-        Vector2 look = new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
 
-        cam.transform.Rotate(-look.y * sensitivity, 0, 0);
-        controller.transform.Rotate(0, look.x * sensitivity, 0);
-        //controller.SimpleMove(move);
+        float horizontal = Input.GetAxis("Horizontal");
+        float vertical = Input.GetAxis("Vertical");
 
-        Vector3 currentRotation = cam.transform.localEulerAngles;
-        if (currentRotation.x > 180) currentRotation.x -= 360;
-        currentRotation.x = Mathf.Clamp(currentRotation.x, -70, 70);
-        cam.transform.localRotation = Quaternion.Euler(currentRotation);
-    }
-    void OnCollisionEnter(Collision other) 
-    {
-        if (other.gameObject.tag == "Ground")
+        Vector3 fwd = cam.transform.forward * vertical;
+        Vector3 side = cam.transform.right * horizontal;
+
+        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
         {
-            isGrounded = true;
+            velocity.y += Mathf.Sqrt(1 * -3.0f * gravity);
         }
-    }
-    void OnCollisionExit(Collision other)
-    {
-        if (other.gameObject.tag == "Ground")
+
+        if (Input.GetKey(KeyCode.LeftShift) && isGrounded)
         {
-            isGrounded = false;
-        }
+            speed = 6f;
+        } else { speed = 3f; }
+
+        Vector3 dir = (fwd + side).normalized;
+        dir.y = 0;
+        velocity.y += gravity * Time.deltaTime;
+        Vector3 distance = dir * speed;
+
+        controller.Move(distance * Time.deltaTime);
+        controller.Move(velocity * Time.deltaTime);
     }
 }
